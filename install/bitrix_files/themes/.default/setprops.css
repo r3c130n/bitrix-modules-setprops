@@ -1,8 +1,36 @@
 .setprops_menu_icon {  
     background: url("icons/setprops/preferences.png") no-repeat scroll center center transparent;
 }
- 
+
 #props_block{
-    display: block; 
+    display: none; 
+    width: 470px; 
     padding-left: 10px;
+    padding-bottom: 10px; 
+    padding-right: 5px;
 }
+
+#props_block .name{
+    font-weight: bold;
+}
+
+#props_block p{
+    margin-top: 3px; 
+    margin-bottom: 3px;
+}
+
+#props_block table td {
+    padding-right: 20px;
+    width: 210px; 
+}
+
+#props_block .field input {
+    width: 200px;
+}
+
+#props_block .field textarea {
+    width: 200px;
+    resize: none; 
+    height: 55px;
+}
+ 

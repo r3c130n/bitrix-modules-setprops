@@ -648,6 +648,14 @@ if ($lAdmin->EditAction()) {
     }
 }
 
+$fields = array(
+    'NAME' => 'Название элемента', 
+    'PREVIEW_TEXT' => 'Предварительное описание',
+    'DETAIL_TEXT' => 'Детальное описание', 
+    'SORT' => 'Сортировка', 
+    'TAGS' => 'Теги',
+    );
+
 if (($arID = $lAdmin->GroupAction())) {
     if ($_REQUEST['action_target'] == 'selected') {
         $rsData = CIBlockElement::GetList($arOrder, $arFilter);
@@ -714,6 +722,18 @@ if (($arID = $lAdmin->GroupAction())) {
         }
 
         switch ($_REQUEST['action']) {
+            case "properties":
+                $arUpdate = array();
+                foreach($fields as $code => $field) {
+                    if($_REQUEST[$code]) {
+                        $arUpdate[$code] = $_REQUEST[$code];
+                    }
+                }  
+                if(count($arUpdate)) { 
+                    $el = new CIBlockElement;  
+                    $el->Update($ID, $arUpdate);
+                }
+                break;
             case "delete":
                 if (CIBlockElementRights::UserHasRightTo($IBLOCK_ID, $ID, "element_delete")) {
                     @set_time_limit(0);
@@ -2411,7 +2431,38 @@ $arGroupActions = array();
             
 $arParams = array();
 
-$props = '<div id="props_block"></div>';
+ob_start();
+
+?>
+<div id="props_block">  
+
+    <table><tr><td valign="top">    
+
+         <p class="name">Свойства элемента</p> 
+
+    </td><td valign="top">  
+        
+        <p class="name">Поля элемента</p> 
+        
+        <? foreach($fields as $code => $field) { ?>
+            <div class="field"><p><?=$field;?>:</p>
+            <?
+            if(in_array($code, array('PREVIEW_TEXT', 'DETAIL_TEXT'))) { ?>  
+                <textarea name="<?=$code;?>"></textarea>
+                <br>Тип:
+                <input type="radio" name="<?=$code?>_TYPE" value="text">text 
+                <input type="radio" name="<?=$code?>_TYPE" value="html" checked>html 
+            <? } else { ?>   
+                <input type="text" name="<?=$code;?>"> 
+            <? } ?>
+            </div>     
+        <? } ?> 
+        
+    </td></tr></table> 
+</div>
+<?
+
+$props = ob_get_clean();
 
 $arGroupActions["properties"] = 'установить свойства'; 
 $arGroupActions["properties_chooser"] = array("type" => "html", "value" => $props);
@@ -2943,8 +2994,9 @@ $oFilter->End();
 <style>
     .adm-list-table-footer{
          height: auto;
-         background: none;
-         min-height: 38px;
+         background-image: none;
+         background-color: #E6EEF0;
+         min-height: 38px; 
     }
 </style>
 <?    
