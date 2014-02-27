@@ -1,5 +1,6 @@
 <?php
-  
+IncludeModuleLangFile(__FILE__);
+
 class setprops extends CModule {
   
     var $MODULE_ID = "setprops";
@@ -18,11 +19,11 @@ class setprops extends CModule {
         if (array_key_exists("VERSION", $arModuleVersion)) {
             $this->MODULE_VERSION = $arModuleVersion["VERSION"];
             $this->MODULE_VERSION_DATE = $arModuleVersion["VERSION_DATE"];
-        } 
-        $this->MODULE_NAME = 'Управление свойствами';
-        $this->MODULE_DESCRIPTION = 'Массовое редактирование значений свойств';
+        }
+        $this->MODULE_NAME = GetMessage('SETPROPS_MODULE_NAME');
+        $this->MODULE_DESCRIPTION = GetMessage('SETPROPS_MODULE_DESCRIPTION');
     } 
- 
+
     function DoInstall() {
          CopyDirFiles($_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/setprops/install/bitrix_files/',
                       $_SERVER['DOCUMENT_ROOT'] . '/bitrix/', true, true);

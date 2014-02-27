@@ -2193,7 +2193,7 @@ foreach ($arRows as $f_ID => $row) {
 
                 if (
                         $row->arRes['orig']['WF_NEW'] == "Y" && isset($arElementOps[$f_ID]) && isset($arElementOps[$f_ID]["element_edit"]) && 2 <= $STATUS_PERMISSION
-                ) { // not published, under workflow
+                ) {  
                     $arActions[] = array("SEPARATOR" => true);
                     $arActions[] = array(
                         "ICON" => "view",
