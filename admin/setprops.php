@@ -336,28 +336,6 @@ if ($lAdmin->EditAction()) {
         if (!$arRes)
             continue;
 
-        $WF_ID = $ID;
-        if ($bWorkFlow) {
-            $WF_ID = CIBlockElement::WF_GetLast($ID);
-            if ($WF_ID != $ID) {
-                $rsData2 = CIBlockElement::GetByID($WF_ID);
-                if ($arRes = $rsData2->Fetch())
-                    $WF_ID = $arRes["ID"];
-                else
-                    $WF_ID = $ID;
-            }
-
-            if ($arRes["LOCK_STATUS"] == 'red' && !($_REQUEST['action'] == 'unlock' && CWorkflow::IsAdmin())) {
-                $lAdmin->AddUpdateError(GetMessage("IBEL_A_UPDERR1") . " (ID:" . $ID . ")", $ID);
-                continue;
-            }
-        } elseif ($bBizproc) {
-            if (CIBlockDocument::IsDocumentLocked($ID, "")) {
-                $lAdmin->AddUpdateError(GetMessage("IBEL_A_UPDERR_LOCKED", array("#ID#" => $ID)), $ID);
-                continue;
-            }
-        }
-
         if ($bWorkFlow) {
             if (!CIBlockElementRights::UserHasRightTo($IBLOCK_ID, $ID, "element_edit")) {
                 $lAdmin->AddUpdateError(GetMessage("IBEL_A_UPDERR3") . " (ID:" . $ID . ")", $ID);
@@ -656,6 +634,12 @@ $fields = array(
     'TAGS' => 'Теги',
     );
 
+$props = array();
+$properties = CIBlockProperty::GetList(Array("sort" => "asc", "name" => "asc"), Array("ACTIVE" => "Y", "IBLOCK_ID" => $IBLOCK_ID));
+while ($prop_fields = $properties->GetNext()) {
+    $props[] = $prop_fields;
+}
+
 if (($arID = $lAdmin->GroupAction())) {
     if ($_REQUEST['action_target'] == 'selected') {
         $rsData = CIBlockElement::GetList($arOrder, $arFilter);
@@ -729,6 +713,11 @@ if (($arID = $lAdmin->GroupAction())) {
                         $arUpdate[$code] = $_REQUEST[$code];
                     }
                 }  
+                foreach ($props as $prop) {
+                    if($_REQUEST['props'][$prop["ID"]]) { 
+                        CIBlockElement::SetPropertyValuesEx($ID, $IBLOCK_ID, array($prop["ID"] => $_REQUEST['props'][$prop["ID"]]));
+                    } 
+                } 
                 if(count($arUpdate)) { 
                     $el = new CIBlockElement;  
                     $el->Update($ID, $arUpdate);
@@ -1357,7 +1346,7 @@ while ($arRes = $rsData->NavNext(true, "f_")) {
             $f_ID = $arRes_orig["ID"];
         }
         $lockStatus = $arRes_orig['LOCK_STATUS'];
-    }
+    } 
     elseif ($bBizproc) {
         $lockStatus = CIBlockDocument::IsDocumentLocked($f_ID, "") ? "red" : "green";
     } else {
@@ -1428,7 +1417,7 @@ while ($arRes = $rsData->NavNext(true, "f_")) {
                 $arProperties[$ar["ID"]] = array();
             $arProperties[$ar["ID"]][$ar["PROPERTY_VALUE_ID"]] = $ar;
         }
-    }
+    } 
 
     foreach ($arSelectedProps as $aProp) {
         $arViewHTML = array();
@@ -2427,23 +2416,45 @@ $lAdmin->AddFooter(
         )
 );
 
-$arGroupActions = array();
-            
-$arParams = array();
-
-ob_start();
-
+$arGroupActions = array(); 
+$arParams = array(); 
+ob_start(); 
 ?>
-<div id="props_block">  
-
-    <table><tr><td valign="top">    
-
+<div id="props_block"> 
+    <table><tr><td valign="top">  
          <p class="name">Свойства элемента</p> 
-
-    </td><td valign="top">  
-        
-        <p class="name">Поля элемента</p> 
-        
+         <? foreach($props as $prop) { ?>
+            <div class="field"><p><?=$prop["NAME"];?>:</p>
+            <?
+             switch ($prop["PROPERTY_TYPE"]) {
+                 case 'S':
+                     ?>
+                     <input type="text" name="props[<?=$prop["ID"];?>]">  
+                     <?
+                     break;
+                 case 'L':
+                     ?>
+                     <select name="props[<?=$prop["ID"];?>]">
+                         <option value="">-Выберите-</option>
+                         <?
+                         $property_enums = CIBlockPropertyEnum::GetList(Array("DEF"=>"DESC", "SORT"=>"ASC"), Array("PROPERTY_ID" => $prop["ID"]));
+                         while($enum_fields = $property_enums->GetNext()) { 
+                             ?>
+                             <option value="<?=$enum_fields["ID"]?>"><?=$enum_fields["VALUE"];?></option>
+                             <? 
+                         } 
+                         ?>
+                     </select>    
+                     <?
+                     break;
+                 default:
+                     break;
+             }
+             ?> 
+            </div>   
+         <? } ?> 
+    </td><td valign="top">   
+        <p class="name">Поля элемента</p>  
         <? foreach($fields as $code => $field) { ?>
             <div class="field"><p><?=$field;?>:</p>
             <?
@@ -2456,17 +2467,13 @@ ob_start();
                 <input type="text" name="<?=$code;?>"> 
             <? } ?>
             </div>     
-        <? } ?> 
-        
+        <? } ?>  
     </td></tr></table> 
 </div>
 <?
-
-$props = ob_get_clean();
-
-$arGroupActions["properties"] = 'установить свойства'; 
+$props = ob_get_clean(); 
+$arGroupActions["properties"] = GetMessage("IBEL_SET_PROPS"); 
 $arGroupActions["properties_chooser"] = array("type" => "html", "value" => $props);
-
 $arParams["select_onchange"] = "BX('props_block').style.display = (this.value == 'properties'? 'block':'none');";
          
 foreach ($arElementOps as $id => $arOps) {
@@ -2883,7 +2890,7 @@ else:
 function _ShowGroupPropertyField2($name, $property_fields, $values) {
     if (!is_array($values))
         $values = Array();
-
+ 
     $res = "";
     $result = "";
     $bWas = false;
@@ -2986,13 +2993,13 @@ if ($boolSKU && $boolSKUFiltrable) {
 
 $oFilter->Buttons();
 ?><span class="adm-btn-wrap"><input type="submit"  class="adm-btn" name="set_filter" value="<? echo GetMessage("admin_lib_filter_set_butt"); ?>" title="<? echo GetMessage("admin_lib_filter_set_butt_title"); ?>" onClick="return applyFilter(this);"></span>
-    <span class="adm-btn-wrap"><input type="submit"  class="adm-btn" name="del_filter" value="<? echo GetMessage("admin_lib_filter_clear_butt"); ?>" title="<? echo GetMessage("admin_lib_filter_clear_butt_title"); ?>" onClick="deleteFilter(this); return false;"></span>
+  <span class="adm-btn-wrap"><input type="submit"  class="adm-btn" name="del_filter" value="<? echo GetMessage("admin_lib_filter_clear_butt"); ?>" title="<? echo GetMessage("admin_lib_filter_clear_butt_title"); ?>" onClick="deleteFilter(this); return false;"></span>
 <?
 $oFilter->End();
-?> 
+?>
 </form> 
 <style>
-    .adm-list-table-footer{
+    .adm-list-table-footer {
          height: auto;
          background-image: none;
          background-color: #E6EEF0;

@@ -32,7 +32,8 @@ $aMenu[] = array(
     "icon" => "setprops_menu_icon",
     "page_icon" => "setprops_menu_icon",
     "items_id" => "setprops_main", 
-    "items" => $iblock_types
+    "items" => $iblock_types,
+    "more_url" => array("setprops.php")
 ); 
 
 return $aMenu;  

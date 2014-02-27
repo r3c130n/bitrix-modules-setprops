@@ -105,3 +105,4 @@ $MESS["IBEL_CATALOG_MEASURE"] = "Ед. измерения";
 $MESS["IBEL_CATALOG_MEASURE_TITLE"] = "Единица измерения";
 $MESS["IBEL_CATALOG_MEASURE_RATIO"] = "Коэф.";
 $MESS["IBEL_CATALOG_MEASURE_RATIO_TITLE"] = "Коэффициент единицы измерения"; 
+$MESS["IBEL_SET_PROPS"] = "установить свойства";
