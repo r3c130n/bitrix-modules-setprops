@@ -1,4 +1,4 @@
-<?
+<?php
 $MESS["IBLOCK_EL_ADMIN_DESC"] = "Описание:";
 $MESS["IBLOCK_EL_ADMIN_DCREATE"] = "Дата создания";
 $MESS["IBLOCK_EL_ADMIN_WCREATE"] = "Кто создал:";
@@ -33,9 +33,7 @@ $MESS["IBEL_A_HIST"] = "История изменений";
 $MESS["IBEL_A_HISTORY_ALT"] = "История изменений";
 $MESS["IBEL_A_ORIG"] = "Открыть на сайте опубликованный элемент";
 $MESS["IBEL_A_ORIG_ED"] = "Изменить оригинал";
-$MESS["IBEL_A_ORIG_ED_TITLE"] = "Изменить опубликованную версию";
-$MESS["IBEL_A_UNLOCK_ACTION"] = "разблокировать";
-$MESS["IBEL_A_LOCK_ACTION"] = "заблокировать";
+$MESS["IBEL_A_ORIG_ED_TITLE"] = "Изменить опубликованную версию"; 
 $MESS["IBEL_A_ADDEL_TITLE"] = "Нажмите для добавления нового элемента";
 $MESS["IBEL_A_UP"] = "На один уровень вверх";
 $MESS["IBEL_A_UP_TITLE"] = "Нажмите для перехода в папку выше";

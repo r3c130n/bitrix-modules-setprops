@@ -2411,13 +2411,8 @@ $arGroupActions = array();
             
 $arParams = array();
 
-$props = '<div id="props_block" style="display:none">
-    
+$props = '<div id="props_block"></div>';
 
-<p>tedst</p>
-
-</div>';
-            
 $arGroupActions["properties"] = 'установить свойства'; 
 $arGroupActions["properties_chooser"] = array("type" => "html", "value" => $props);
 
@@ -2953,4 +2948,5 @@ $oFilter->End();
     }
 </style>
 <?    
-require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/epilog_admin.php");
+$lAdmin->DisplayList(); 
+require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/epilog_admin.php"); 
