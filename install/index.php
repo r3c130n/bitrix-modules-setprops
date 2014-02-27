@@ -1,5 +1,5 @@
 <?php
- 
+  
 class setprops extends CModule {
   
     var $MODULE_ID = "setprops";

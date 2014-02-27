@@ -11,13 +11,15 @@ while ($ar_iblock_type = $db_iblock_type->Fetch()) {
             $iblocks[] = array(
                 "text" => $ar_res['NAME'], 
                 "icon" => "iblock_menu_icon_iblocks", 
-                "url" => "setprops.php?lang=" . LANGUAGE_ID . '?ID=' . $ar_res["ID"] ,
-                );
+                "url" => "setprops.php?IBLOCK_ID=" . $ar_res["ID"] . "&type=" . $ar_iblock_type["ID"] . "&lang=" . LANGUAGE_ID . "&find_el_y=Y", 
+                "items_id" => "setprops_iblock_" . $ar_res["ID"]
+                ); 
         } 
         $iblock_types[] = array(
             "text" => $arIBType['NAME'], 
             "icon" => "iblock_menu_icon_types",
-            "items" => $iblocks
+            "items" => $iblocks,
+            "items_id" => "setprops_iblock_type" . $arIBType["ID"]
             );
     }
 }
