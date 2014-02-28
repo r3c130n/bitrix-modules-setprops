@@ -3,8 +3,7 @@
 }
 
 #props_block{
-    display: none; 
-    width: 470px; 
+    display: none;
     padding-left: 10px;
     padding-bottom: 10px; 
     padding-right: 5px;
@@ -31,6 +30,6 @@
 #props_block .field textarea {
     width: 200px;
     resize: none; 
-    height: 55px;
+    height: 60px;
 }
  

@@ -1,6 +1,7 @@
 <?php
 require_once($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_admin_before.php");
 CModule::IncludeModule("iblock");
+CJSCore::Init(array("jquery")); 
 require_once($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/iblock/prolog.php");
 IncludeModuleLangFile(__FILE__);
 IncludeModuleLangFile($_SERVER["DOCUMENT_ROOT"] . BX_ROOT . "/modules/main/interface/admin_lib.php");
@@ -2474,7 +2475,7 @@ ob_start();
 $props = ob_get_clean(); 
 $arGroupActions["properties"] = GetMessage("IBEL_SET_PROPS"); 
 $arGroupActions["properties_chooser"] = array("type" => "html", "value" => $props);
-$arParams["select_onchange"] = "BX('props_block').style.display = (this.value == 'properties'? 'block':'none');";
+$arParams["select_onchange"] = "BX('props_block').style.display = (this.value == 'properties'? 'block':'none'); initsetprops();";
          
 foreach ($arElementOps as $id => $arOps) {
     if (isset($arOps["element_delete"])) {
@@ -2998,14 +2999,11 @@ $oFilter->Buttons();
 $oFilter->End();
 ?>
 </form> 
-<style>
-    .adm-list-table-footer {
-         height: auto;
-         background-image: none;
-         background-color: #E6EEF0;
-         min-height: 38px; 
+<script>
+    function initsetprops() { 
+        $('#props_block').appendTo('.adm-list-table-wrap form'); 
     }
-</style>
+</script>    
 <?    
 $lAdmin->DisplayList(); 
 require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/epilog_admin.php"); 
