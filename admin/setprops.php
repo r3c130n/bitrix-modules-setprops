@@ -2429,6 +2429,7 @@ ob_start();
             <?
              switch ($prop["PROPERTY_TYPE"]) {
                  case 'S':
+                 case 'N':
                      ?>
                      <input type="text" name="props[<?=$prop["ID"];?>]">  
                      <?
