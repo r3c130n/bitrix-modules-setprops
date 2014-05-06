@@ -719,6 +719,13 @@ if (($arID = $lAdmin->GroupAction())) {
                         CIBlockElement::SetPropertyValuesEx($ID, $IBLOCK_ID, array($prop["ID"] => $_REQUEST['props'][$prop["ID"]]));
                     } 
                 } 
+                if($bCatalog && $_REQUEST['base_price_multiplier'] && isset($_REQUEST['base_price_add']) ) {
+                            $arr = CPrice::GetBasePrice($ID);
+                            $price = $arr["PRICE"];  
+                            $price = $price * $_REQUEST['base_price_multiplier']; 
+                            $price = $price + $_REQUEST['base_price_add'];
+                            CPrice::SetBasePrice($ID, $price, $arr["CURRENCY"]); 
+                        }
                 if(count($arUpdate)) { 
                     $el = new CIBlockElement;  
                     $el->Update($ID, $arUpdate);
@@ -2470,7 +2477,21 @@ ob_start();
             <? } ?>
             </div>     
         <? } ?>  
-    </td></tr></table> 
+    </td>
+    <?
+    if (CModule::IncludeModule('catalog')) {
+        $conf = CCatalog::GetByID($IBLOCK_ID);
+        if ($conf) {
+            ?>
+            <td valign="top">   
+                <p class="name">Базовая цена</p>  
+                x <input type="text" style="width: 50px;" value="1.0" name="base_price_multiplier">
+                <br> 
+                &plusmn; <input type="text" style="width: 50px;" value="0" name="base_price_add">
+            </td>
+    <? }
+}
+?></tr></table> 
 </div>
 <?
 $props = ob_get_clean(); 
